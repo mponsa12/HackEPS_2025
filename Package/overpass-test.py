@@ -1,19 +1,26 @@
-import overpy
-api = overpy.Overpass()
-result = api.query("""
+import requests
+import json
+
+query = """
     [out:json][timeout:25];
-    area[name="Los Angeles"]->.searchArea;
+    area["name"="Los Angeles"]->.searchArea;
+    // gather results
     relation["boundary"="administrative"](area.searchArea);
+    // print results
     out geom;
-""")
+"""
 
-if not result:
-    print("No se han encontrado resultados.")
-else:
-    print (result.relations)
-    print(f"Se han encontrado {len(result.relations)} relaciones.")
+url = "https://overpass-api.de/api/interpreter"
+response = requests.post(url, data={'data': query})
 
-    
-    for rel in result.relations:
-        print(f"\nID: {rel.id}, tags: {rel.tags}")
-    
+try:
+    result = response.json()
+    print(json.dumps(result, indent=2))
+except Exception as e:
+    print("Error decoding JSON response:", e)
+    print("Raw response text:")
+    print(response.text)
+# OUt to out.json 
+with open("out.json", "w") as f:
+    json.dump(result, f, indent=2)
+print("Data written to out.json")
