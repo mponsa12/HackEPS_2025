@@ -15,7 +15,13 @@ response = requests.post(url, data={'data': query})
 
 try:
     result = response.json()
-    print(json.dumps(result, indent=2))
+    for element in result.get('elements', []):
+        if "Los Angeles" == element.get('tags', {}).get('name'):
+            print(f"ID: {element.get('id')}, Type: {element.get('type')}, Name: {element.get('tags', {}).get('name')}")
+
+            print (f"Tags: {element.get('tags')}")
+
+
 except Exception as e:
     print("Error decoding JSON response:", e)
     print("Raw response text:")

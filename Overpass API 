@@ -1,0 +1,7 @@
+[out:json][timeout:25];
+{{geocodeArea:Los Angeles}}->.searchArea;
+// gather results
+relation["boundary"="administrative"](area.searchArea);
+
+// print results
+out geom;
