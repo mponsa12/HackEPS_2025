@@ -1,10 +1,12 @@
 import overpy
 api = overpy.Overpass()
 result = api.query("""
-    node
-      ["amenity"="restaurant"]
-      (40.730610,-73.935242,40.741404,-73.921285);
-    out;
+    [out:json][timeout:25];
+    {{geocodeArea:Los Angeles}}->.searchArea;
+    // gather results
+    relation["boundary"="administrative"](area.searchArea);
+    // print results
+    out geom;
 """)
 for node in result.nodes:
     print("Restaurant:", node.tags.get("name", "n/a"))
